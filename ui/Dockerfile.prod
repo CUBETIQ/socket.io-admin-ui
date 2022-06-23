@@ -3,12 +3,7 @@ FROM node:14-alpine as node-builder
 WORKDIR /app
 
 # Install app dependencies
-COPY package.json .
-
-# Custom registry
-RUN npm config set registry https://r.ctdn.net
-RUN npm config get registry
-
+COPY package*.json ./
 RUN npm install
 
 # Bundle app source
