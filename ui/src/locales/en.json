@@ -15,6 +15,8 @@
   "connected": "connected",
   "disconnected": "disconnected",
   "data": "Data",
+  "timestamp": "Timestamp",
+  "args": "Arguments",
   "connection": {
     "title": "Connection",
     "serverUrl": "Server URL",
@@ -27,10 +29,20 @@
     "path": "Path",
     "parser": "Parser",
     "default-parser": "Built-in parser",
-    "msgpack-parser": "MessagePack parser"
+    "msgpack-parser": "MessagePack parser",
+    "namespace": "Admin namespace",
+    "advanced-options": "Advanced options"
   },
   "dashboard": {
-    "title": "Dashboard"
+    "title": "Dashboard",
+    "connectionsHistogram": {
+      "title": "Connection and disconnection events"
+    },
+    "bytesHistogram": {
+      "title": "Bytes received and sent",
+      "bytesIn": "Bytes received",
+      "bytesOut": "Bytes sent"
+    }
   },
   "sockets": {
     "title": "Sockets",
@@ -84,5 +96,20 @@
     "language": "Language",
     "readonly": "Read-only?",
     "dark-theme": "Dark theme?"
+  },
+  "events": {
+    "title": "Events",
+    "type": {
+      "connection": "Connection",
+      "disconnection": "Disconnection",
+      "room_joined": "Room joined",
+      "room_left": "Room left",
+      "event_received": "Event received",
+      "event_sent": "Event sent"
+    },
+    "eventName": "Event name",
+    "eventArgs": "Event arguments",
+    "reason": "Reason",
+    "room": "Room"
   }
 }

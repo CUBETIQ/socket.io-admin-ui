@@ -14,6 +14,9 @@
   "status": "Statut",
   "connected": "connecté",
   "disconnected": "déconnecté",
+  "data": "Données",
+  "timestamp": "Horodatage",
+  "args": "Arguments",
   "connection": {
     "title": "Connexion",
     "serverUrl": "URL du serveur",
@@ -23,10 +26,23 @@
     "invalid-credentials": "Identifiants invalides",
     "error": "Erreur",
     "websocket-only": "WebSocket uniquement ?",
-    "path": "Chemin HTTP"
+    "path": "Chemin HTTP",
+    "parser": "Encodeur",
+    "default-parser": "Encodeur par défaut",
+    "msgpack-parser": "Encodeur basé sur MessagePack",
+    "namespace": "Espace de nom d'administration",
+    "advanced-options": "Options avancées"
   },
   "dashboard": {
-    "title": "Accueil"
+    "title": "Accueil",
+    "connectionsHistogram": {
+      "title": "Évènements de connexion et de déconnexion"
+    },
+    "bytesHistogram": {
+      "title": "Octets reçus et envoyés",
+      "bytesIn": "Octets reçus",
+      "bytesOut": "Octets envoyés"
+    }
   },
   "sockets": {
     "title": "Connexions",
@@ -80,5 +96,20 @@
     "language": "Langue",
     "readonly": "Lecture seule ?",
     "dark-theme": "Mode sombre ?"
+  },
+  "events": {
+    "title": "Évènements",
+    "type": {
+      "connection": "Connexion",
+      "disconnection": "Déconnexion",
+      "room_joined": "Salle rejointe",
+      "room_left": "Salle quittée",
+      "event_received": "Évènement reçu",
+      "event_sent": "Évènement envoyé"
+    },
+    "eventName": "Nom de l'évènement",
+    "eventArgs": "Argument de l'évènement",
+    "reason": "Raison",
+    "room": "Salle"
   }
 }

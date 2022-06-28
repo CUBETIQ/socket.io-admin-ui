@@ -3,7 +3,7 @@ import { Server } from "socket.io";
 import { Server as ServerV3 } from "socket.io-v3";
 import { io as ioc } from "socket.io-client";
 import { AddressInfo } from "net";
-import { InMemoryStore, instrument, RedisStore } from "..";
+import { InMemoryStore, instrument, RedisStore } from "../lib";
 import expect = require("expect.js");
 import { createClient } from "redis";
 
@@ -14,6 +14,9 @@ const waitFor = (emitter: any, event: string): Promise<any> => {
     });
   });
 };
+
+const sleep = (duration: number) =>
+  new Promise((resolve) => setTimeout(resolve, duration));
 
 describe("Socket.IO Admin (server instrumentation)", () => {
   ([
@@ -186,6 +189,8 @@ describe("Socket.IO Admin (server instrumentation)", () => {
               "MJOIN",
               "MLEAVE",
               "MDISCONNECT",
+              "AGGREGATED_EVENTS",
+              "ALL_EVENTS",
             ]);
           } else {
             expect(config.supportedFeatures).to.eql([
@@ -193,6 +198,8 @@ describe("Socket.IO Admin (server instrumentation)", () => {
               "JOIN",
               "LEAVE",
               "DISCONNECT",
+              "AGGREGATED_EVENTS",
+              "ALL_EVENTS",
             ]);
           }
           adminSocket.disconnect();
@@ -209,7 +216,26 @@ describe("Socket.IO Admin (server instrumentation)", () => {
         const adminSocket = ioc(`http://localhost:${port}/admin`);
 
         adminSocket.on("config", (config: any) => {
-          expect(config.supportedFeatures).to.eql([]);
+          expect(config.supportedFeatures).to.eql([
+            "AGGREGATED_EVENTS",
+            "ALL_EVENTS",
+          ]);
+          adminSocket.disconnect();
+          done();
+        });
+      });
+
+      it("returns an empty list of supported features when in production mode", (done) => {
+        instrument(io, {
+          auth: false,
+          readonly: true,
+          mode: "production",
+        });
+
+        const adminSocket = ioc(`http://localhost:${port}/admin`);
+
+        adminSocket.on("config", (config: any) => {
+          expect(config.supportedFeatures).to.eql(["AGGREGATED_EVENTS"]);
           adminSocket.disconnect();
           done();
         });
@@ -241,6 +267,9 @@ describe("Socket.IO Admin (server instrumentation)", () => {
 
         clientSocket.disconnect();
         adminSocket.disconnect();
+
+        // FIXME without this, the process does not exit properly (?)
+        await sleep(100);
       });
 
       it("emits administrative events", async () => {
@@ -258,7 +287,7 @@ describe("Socket.IO Admin (server instrumentation)", () => {
 
         // connect
         const serverSocket = await waitFor(io, "connection");
-        const socket = await waitFor(adminSocket, "socket_connected");
+        const [socket] = await waitFor(adminSocket, "socket_connected");
 
         expect(socket.id).to.eql(serverSocket.id);
         expect(socket.nsp).to.eql("/");
@@ -323,7 +352,7 @@ describe("Socket.IO Admin (server instrumentation)", () => {
 
         const serverSocket = await waitFor(io, "connection");
 
-        const socket = await waitFor(adminSocket, "socket_connected");
+        const [socket] = await waitFor(adminSocket, "socket_connected");
         expect(socket.data).to.eql({ count: 1, array: [1] });
 
         serverSocket.data.count++;
@@ -395,7 +424,7 @@ describe("Socket.IO Admin (server instrumentation)", () => {
           forceNew: true,
         });
 
-        const socket = await waitFor(adminSocket, "socket_connected");
+        const [socket] = await waitFor(adminSocket, "socket_connected");
 
         expect(socket.nsp).to.eql("/dynamic-101");
         clientSocket.disconnect();
